@@ -5,38 +5,42 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@NotEmpty(message = "Username is Mandatory field. Please provide username")
 	@Column(name = "USER_NAME", length = 50, nullable = false)
 	private String username;
-	
+
+	@Size(min = 2, message = "FirstName should have atleast 2 characters")
 	@Column(name = "FIRST_NAME", length = 50, nullable = false)
 	private String firstname;
-	
+
 	@Column(name = "LAST_NAME", length = 50, nullable = false)
 	private String lastname;
-	
+
 	@Column(name = "EMAIL_ADDRESS", length = 50, nullable = false)
 	private String email;
-	
+
 	@Column(name = "ROLE", length = 50, nullable = false)
 	private String role;
-	
+
 	@Column(name = "SSN", length = 30, nullable = false, unique = true)
 	private String ssn;
-	
-	//No arguments Constructor
+
+	// No arguments Constructor
 	public User() {
-		
+
 	}
 
-	//Fields Constructor
+	// Fields Constructor
 	public User(Long id, String username, String firstname, String lastname, String email, String role, String ssn) {
 		super();
 		this.id = id;
@@ -48,7 +52,7 @@ public class User {
 		this.ssn = ssn;
 	}
 
-	//Getters and Setters
+	// Getters and Setters
 	public Long getId() {
 		return id;
 	}
@@ -105,11 +109,11 @@ public class User {
 		this.ssn = ssn;
 	}
 
-	//To String - (Optional required for bean logging)
+	// To String - (Optional required for bean logging)
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", firstname=" + firstname + ", lastname=" + lastname
 				+ ", email=" + email + ", role=" + role + ", ssn=" + ssn + "]";
 	}
-	
+
 }

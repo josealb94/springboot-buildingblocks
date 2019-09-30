@@ -21,46 +21,43 @@ public class UserService {
 
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
-	} 
-	
+	}
+
 	public User createUser(User u) throws UserExistsException {
 		User existingUser = userRepository.findByUsername(u.getUsername());
-		if(existingUser != null) {
+		if (existingUser != null) {
 			throw new UserExistsException("User already exists in repository");
 		}
 		return userRepository.save(u);
 	}
-	
+
 	public Optional<User> findUserById(Long id) throws UserNotFoundException {
 		Optional<User> user = userRepository.findById(id);
-		if(!user.isPresent()) {
+		if (!user.isPresent()) {
 			throw new UserNotFoundException("User Not foud in user Repository");
 		}
 		return user;
 	}
-	
+
 	public User updateUserById(Long id, User u) throws UserNotFoundException {
 		Optional<User> optionalUser = userRepository.findById(id);
-		if(!optionalUser.isPresent()) {
+		if (!optionalUser.isPresent()) {
 			throw new UserNotFoundException("User Not foud in user Repository, provide the correct user id");
 		}
 		u.setId(id);
 		return userRepository.save(u);
 	}
-	
+
 	public void deleteUserById(Long id) {
 		Optional<User> optionalUser = userRepository.findById(id);
-		if(!optionalUser.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Not foud in user Repository, provide the correct user id");
+		if (!optionalUser.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"User Not foud in user Repository, provide the correct user id");
 		}
 		userRepository.deleteById(id);
 	}
-	
-	public User findUserByUsername(String username) throws UserNotFoundException {
-		User user = userRepository.findByUsername(username);
-		if(user == null) {
-			throw new UserNotFoundException("User Not foud in user Repository, provide the correct user id");
-		}
+
+	public User findUserByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
 }
