@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +30,11 @@ import com.josegallegos.restservices.exceptions.UserNameNotFoundException;
 import com.josegallegos.restservices.exceptions.UserNotFoundException;
 import com.josegallegos.restservices.services.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags = "User Management RESTful Services", value = "UserController", description = "Controller for User Management")
 @RestController
 @Validated
 @RequestMapping(value = "/users")
@@ -38,14 +44,16 @@ public class UserController {
 	private UserService userService;
 
 	// FindAll
-	@GetMapping
+	@ApiOperation(value = "Retrieve list of users")
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<User> getAllUser() {
 		return userService.getAllUsers();
 	}
 
 	// CreateUser
+	@ApiOperation(value = "Creates a new user")
 	@PostMapping
-	public ResponseEntity<Void> createUser(@Valid @RequestBody User user, UriComponentsBuilder builder) {
+	public ResponseEntity<Void> createUser(@ApiParam("User information for a new user to be created") @Valid @RequestBody User user, UriComponentsBuilder builder) {
 		try {
 			userService.createUser(user);
 			HttpHeaders headers = new HttpHeaders();
@@ -58,9 +66,10 @@ public class UserController {
 
 	// FindUserById
 	@GetMapping("/{id}")
-	public Optional<User> getUserById(@PathVariable("id") @Min(1) Long id) {
+	public User getUserById(@PathVariable("id") @Min(1) Long id) {
 		try {
-			return userService.findUserById(id);
+			Optional<User> userOptional = userService.findUserById(id); 
+			return userOptional.get();
 		} catch (UserNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}
